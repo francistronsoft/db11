@@ -45,8 +45,15 @@ docker run --rm \
   --volume "$ROOT_DIR/config:/kit-config:ro" \
   --volume "$STAGE_DIR/packages:/out" \
   debian:11.11-slim bash -euxo pipefail -c '
-    cp /kit-config/bullseye.sources.list /etc/apt/sources.list
     cp /kit-config/99bullseye-archive /etc/apt/apt.conf.d/99bullseye-archive
+
+    # A imagem slim nao possui CAs. O HTTP e usado apenas para obter o pacote
+    # assinado de certificados; todas as demais transferencias usam HTTPS.
+    sed "s#https://#http://#g" /kit-config/bullseye.sources.list > /etc/apt/sources.list
+    apt-get update
+    apt-get install -y ca-certificates
+
+    cp /kit-config/bullseye.sources.list /etc/apt/sources.list
     apt-get update
     while IFS= read -r package_name; do
       [ -n "$package_name" ] || continue

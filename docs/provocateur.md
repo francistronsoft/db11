@@ -44,4 +44,4 @@ deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260831T0
 deb [check-valid-until=no] https://snapshot.debian.org/archive/debian-security/20260901T000000Z/ bullseye-security main
 ```
 
-Essas URLs nao recebem novas atualizacoes. Elas preservam um conjunto coerente para reinstalacao, mas nao reabrem o suporte de seguranca encerrado do Debian 11.
+Essas URLs nao recebem novas atualizacoes. O kit instala primeiro uma copia local verificada de `ca-certificates`, portanto o servidor acessa os snapshots somente por HTTPS. Elas preservam um conjunto coerente para reinstalacao, mas nao reabrem o suporte de seguranca encerrado do Debian 11.

@@ -15,6 +15,10 @@ fi
 
 grep -q 'snapshot.debian.org/archive/debian/20260831T000000Z/' "$ROOT_DIR/config/bullseye.sources.list"
 grep -q 'snapshot.debian.org/archive/debian-security/20260901T000000Z/' "$ROOT_DIR/config/bullseye.sources.list"
+if grep -qE '^deb .*http://' "$ROOT_DIR/config/bullseye.sources.list"; then
+  echo "Os repositorios permanentes devem usar HTTPS." >&2
+  exit 1
+fi
 grep -q 'Acquire::Check-Valid-Until "false"' "$ROOT_DIR/config/99bullseye-archive"
 
 echo "Validacao estatica concluida."

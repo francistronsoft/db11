@@ -38,11 +38,21 @@ mkdir -p "$backup_dir"
 cp -a /etc/apt/sources.list "$backup_dir/sources.list" 2>/dev/null || true
 cp -a /etc/apt/sources.list.d "$backup_dir/sources.list.d" 2>/dev/null || true
 
+ca_package=("$ROOT_DIR"/packages/ca-certificates_*.deb)
+openssl_package=("$ROOT_DIR"/packages/openssl_*.deb)
+if [ ! -e "${ca_package[0]}" ] || [ ! -e "${openssl_package[0]}" ]; then
+  echo "Pacotes locais para inicializar os certificados HTTPS nao encontrados." >&2
+  exit 2
+fi
+
+export DEBIAN_FRONTEND=noninteractive
+dpkg -i "${openssl_package[@]}" "${ca_package[@]}"
+update-ca-certificates
+
 install -m 0644 "$ROOT_DIR/config/bullseye.sources.list" /etc/apt/sources.list
 install -m 0644 "$ROOT_DIR/config/99bullseye-archive" /etc/apt/apt.conf.d/99bullseye-archive
 find /etc/apt/sources.list.d -maxdepth 1 -type f \( -name '*.list' -o -name '*.sources' \) -exec mv {} "$backup_dir/" \;
 
-export DEBIAN_FRONTEND=noninteractive
 apt-get update
 
 if compgen -G "$ROOT_DIR/packages/*.deb" >/dev/null; then
