@@ -6,7 +6,7 @@ on:
       tronsoftos_ref:
         description: Commit ou tag do TronSoftOS
         required: false
-        default: ce509f35a2b9ae0bf323c8866a4cf1654dc45449
+        default: 87010a016517b67de704812acae715588bcfc88b
   push:
     branches:
       - main
@@ -28,7 +28,7 @@ jobs:
 
       - name: Build Debian 11 installation kit
         env:
-          TRONSOFTOS_REF_OVERRIDE: ${{ inputs.tronsoftos_ref || 'ce509f35a2b9ae0bf323c8866a4cf1654dc45449' }}
+          TRONSOFTOS_REF_OVERRIDE: ${{ inputs.tronsoftos_ref || '87010a016517b67de704812acae715588bcfc88b' }}
         run: ./scripts/build-kit.sh
 
       - name: Upload installation kit
