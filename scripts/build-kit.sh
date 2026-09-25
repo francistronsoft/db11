@@ -50,10 +50,11 @@ docker run --rm \
     apt-get update
     while IFS= read -r package_name; do
       [ -n "$package_name" ] || continue
-      if ! apt-get install --download-only --reinstall -y "$package_name"; then
-        echo "::error title=Pacote Debian indisponivel::Falha ao baixar $package_name no archive Bullseye"
+      if ! apt-get install --download-only -y "$package_name"; then
+        echo "::error title=Pacote Debian indisponivel::Falha ao baixar $package_name nos snapshots Bullseye"
         exit 20
       fi
+      (cd /out && apt-get download "$package_name")
     done < /kit-config/debian-packages.txt
     cp /var/cache/apt/archives/*.deb /out/
 
