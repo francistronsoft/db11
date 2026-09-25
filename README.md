@@ -29,6 +29,8 @@ dist/db11-kit-0.1.0-amd64.tar.gz
 dist/db11-kit-0.1.0-amd64.tar.gz.sha256
 ```
 
+O workflow `build-installation-kit` executa o mesmo processo em Linux no GitHub Actions e publica o resultado como artefato `db11-kit-amd64`, com retencao de 14 dias.
+
 Para empacotar outra revisao do TronSoftOS:
 
 ```bash

@@ -1,0 +1,43 @@
+name: build-installation-kit
+
+on:
+  workflow_dispatch:
+    inputs:
+      tronsoftos_ref:
+        description: Commit ou tag do TronSoftOS
+        required: false
+        default: ce509f35a2b9ae0bf323c8866a4cf1654dc45449
+  push:
+    branches:
+      - main
+    paths:
+      - config/**
+      - scripts/**
+      - docs/provocateur.md
+      - .github/workflows/build-kit.yml
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Debian 11 installation kit
+        env:
+          TRONSOFTOS_REF_OVERRIDE: ${{ inputs.tronsoftos_ref || 'ce509f35a2b9ae0bf323c8866a4cf1654dc45449' }}
+        run: ./scripts/build-kit.sh
+
+      - name: Upload installation kit
+        uses: actions/upload-artifact@v4
+        with:
+          name: db11-kit-amd64
+          path: |
+            dist/db11-kit-*.tar.gz
+            dist/db11-kit-*.tar.gz.sha256
+          compression-level: 0
+          retention-days: 14
+          if-no-files-found: error
