@@ -13,7 +13,8 @@ if grep -RIE --exclude='static-check.sh' --exclude-dir='.git' \
   exit 1
 fi
 
-grep -q '^deb http://archive.debian.org/debian bullseye ' "$ROOT_DIR/config/bullseye.sources.list"
+grep -q 'snapshot.debian.org/archive/debian/20260831T000000Z/' "$ROOT_DIR/config/bullseye.sources.list"
+grep -q 'snapshot.debian.org/archive/debian-security/20260901T000000Z/' "$ROOT_DIR/config/bullseye.sources.list"
 grep -q 'Acquire::Check-Valid-Until "false"' "$ROOT_DIR/config/99bullseye-archive"
 
 echo "Validacao estatica concluida."

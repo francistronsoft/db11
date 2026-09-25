@@ -6,7 +6,7 @@ O repositorio guarda scripts, versoes fixadas e documentacao. Pacotes `.deb`, No
 
 ## Decisoes de compatibilidade
 
-- Debian Bullseye usa `archive.debian.org`, sem `bullseye-security`.
+- Debian Bullseye usa snapshots imutaveis do repositorio principal e do ultimo `bullseye-security`.
 - Node.js `22.23.3` e instalado em `/opt` com checksum fixado.
 - Docker CE, CLI, containerd, Buildx e Compose usam versoes Bullseye fixadas no manifesto.
 - O TronSoftOS e empacotado em um commit exato e com o frontend previamente compilado.

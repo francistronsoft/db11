@@ -1,6 +1,6 @@
 # Instalacao no Provocateur
 
-Este kit prepara Debian 11 amd64 para o TronSoftOS sem depender de `bullseye-security`.
+Este kit prepara Debian 11 amd64 para o TronSoftOS usando snapshots imutaveis do ultimo conjunto Bullseye disponivel.
 
 ## Ordem obrigatoria
 
@@ -37,10 +37,11 @@ O token deve ser aplicado apenas durante a instalacao. Nunca copie esse JSON par
 
 ## Repositorios
 
-O kit usa somente o arquivo historico principal:
+O kit usa snapshots fixos dos repositorios principal e de seguranca:
 
 ```text
-deb http://archive.debian.org/debian bullseye main contrib non-free
+deb [check-valid-until=no] https://snapshot.debian.org/archive/debian/20260831T000000Z/ bullseye main contrib non-free
+deb [check-valid-until=no] https://snapshot.debian.org/archive/debian-security/20260901T000000Z/ bullseye-security main
 ```
 
-Nao adicione `bullseye-security`: o suporte LTS terminou e esse repositorio nao e uma fonte confiavel para uma instalacao reproduzivel.
+Essas URLs nao recebem novas atualizacoes. Elas preservam um conjunto coerente para reinstalacao, mas nao reabrem o suporte de seguranca encerrado do Debian 11.
