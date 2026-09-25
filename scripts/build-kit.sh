@@ -91,7 +91,14 @@ docker run --rm \
   --volume "$STAGE_DIR/app/tronsoftos/frontend:/src" \
   --workdir /src \
   node:22-bullseye \
-  bash -euc 'npm ci --no-audit --fund=false && npm run build && rm -rf node_modules'
+  bash -euc '
+    export HOME=/tmp/tronsoftos-build
+    export npm_config_cache="$HOME/.npm"
+    mkdir -p "$npm_config_cache"
+    npm ci --no-audit --fund=false
+    npm run build
+    rm -rf node_modules
+  '
 
 git -C "$STAGE_DIR/app/tronsoftos" rev-parse HEAD > "$STAGE_DIR/TRONSOFTOS_COMMIT"
 rm -rf "$STAGE_DIR/app/tronsoftos/.git"
