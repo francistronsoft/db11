@@ -48,7 +48,13 @@ docker run --rm \
     cp /kit-config/bullseye.sources.list /etc/apt/sources.list
     cp /kit-config/99bullseye-archive /etc/apt/apt.conf.d/99bullseye-archive
     apt-get update
-    xargs -r apt-get install --download-only --reinstall -y < /kit-config/debian-packages.txt
+    while IFS= read -r package_name; do
+      [ -n "$package_name" ] || continue
+      if ! apt-get install --download-only --reinstall -y "$package_name"; then
+        echo "::error title=Pacote Debian indisponivel::Falha ao baixar $package_name no archive Bullseye"
+        exit 20
+      fi
+    done < /kit-config/debian-packages.txt
     cp /var/cache/apt/archives/*.deb /out/
 
     apt-get install -y ca-certificates curl gnupg
@@ -76,7 +82,7 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   --volume "$STAGE_DIR/app/tronsoftos/frontend:/src" \
   --workdir /src \
-  "node:${NODE_VERSION}-bullseye" \
+  node:22-bullseye \
   bash -euc 'npm ci --no-audit --fund=false && npm run build && rm -rf node_modules'
 
 git -C "$STAGE_DIR/app/tronsoftos" rev-parse HEAD > "$STAGE_DIR/TRONSOFTOS_COMMIT"
