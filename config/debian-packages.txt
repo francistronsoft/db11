@@ -1,5 +1,8 @@
 ca-certificates
 curl
+ethtool
+firmware-misc-nonfree
+firmware-realtek
 git
 gnupg
 keepalived

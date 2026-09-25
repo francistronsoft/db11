@@ -25,8 +25,8 @@ Execute em uma maquina Linux amd64 com Docker, Git e acesso a internet:
 Saidas:
 
 ```text
-dist/db11-kit-0.1.1-amd64.tar.gz
-dist/db11-kit-0.1.1-amd64.tar.gz.sha256
+dist/db11-kit-0.1.2-amd64.tar.gz
+dist/db11-kit-0.1.2-amd64.tar.gz.sha256
 ```
 
 O workflow `build-installation-kit` executa o mesmo processo em Linux no GitHub Actions e publica o resultado como artefato `db11-kit-amd64`, com retencao de 14 dias.
@@ -42,9 +42,9 @@ TRONSOFTOS_REF_OVERRIDE=<commit-ou-tag> ./scripts/build-kit.sh
 No Debian 11 recem-instalado:
 
 ```bash
-sha256sum --check db11-kit-0.1.1-amd64.tar.gz.sha256
-tar -xzf db11-kit-0.1.1-amd64.tar.gz
-cd db11-kit-0.1.1-amd64
+sha256sum --check db11-kit-0.1.2-amd64.tar.gz.sha256
+tar -xzf db11-kit-0.1.2-amd64.tar.gz
+cd db11-kit-0.1.2-amd64
 sudo ./scripts/install-kit.sh --prepare-only
 ```
 
