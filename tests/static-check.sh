@@ -20,5 +20,7 @@ if grep -qE '^deb .*http://' "$ROOT_DIR/config/bullseye.sources.list"; then
   exit 1
 fi
 grep -q 'Acquire::Check-Valid-Until "false"' "$ROOT_DIR/config/99bullseye-archive"
+grep -q 'sha256sum "$(basename "$ARCHIVE")"' "$ROOT_DIR/scripts/build-kit.sh"
+grep -q 'Nao execute pelo clone do Git' "$ROOT_DIR/scripts/install-kit.sh"
 
 echo "Validacao estatica concluida."

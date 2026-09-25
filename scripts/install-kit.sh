@@ -30,6 +30,12 @@ if [ "${ID:-}" != "debian" ] || [ "${VERSION_ID:-}" != "11" ]; then
   exit 2
 fi
 
+if [ ! -f "$ROOT_DIR/SHA256SUMS" ]; then
+  echo "Bundle incompleto: SHA256SUMS nao encontrado em $ROOT_DIR." >&2
+  echo "Nao execute pelo clone do Git. Baixe e extraia o artefato db11-kit-amd64 do GitHub Actions." >&2
+  exit 2
+fi
+
 "$ROOT_DIR/scripts/verify-kit.sh"
 
 stamp="$(date +%Y%m%d%H%M%S)"

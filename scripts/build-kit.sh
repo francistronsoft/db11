@@ -119,7 +119,10 @@ echo "[6/6] Gerando checksums e arquivo final..."
   find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
 )
 tar -C "$WORK_DIR" -czf "$ARCHIVE" "$(basename "$STAGE_DIR")"
-sha256sum "$ARCHIVE" > "$ARCHIVE.sha256"
+(
+  cd "$OUTPUT_DIR"
+  sha256sum "$(basename "$ARCHIVE")" > "$(basename "$ARCHIVE").sha256"
+)
 
 echo "Kit criado: $ARCHIVE"
 echo "Checksum:   $ARCHIVE.sha256"
