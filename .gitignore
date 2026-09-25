@@ -1,0 +1,11 @@
+dist/
+work/
+*.iso
+*.deb
+*.tar
+*.tar.gz
+*.tar.xz
+*.zip
+*.env.local
+*token*
+*secret*

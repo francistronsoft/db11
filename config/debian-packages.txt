@@ -1,0 +1,14 @@
+ca-certificates
+curl
+git
+gnupg
+keepalived
+openssh-client
+openssh-server
+openssl
+rclone
+rsync
+samba
+samba-common-bin
+sudo
+xz-utils
