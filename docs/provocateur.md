@@ -25,6 +25,15 @@ Este kit prepara Debian 11 amd64 para o TronSoftOS usando snapshots imutaveis do
 9. Restaure o banco a partir do no que estiver ativo. O banco antigo do servidor formatado nao deve voltar para producao.
 10. So formate o segundo no depois que o primeiro estiver acessivel por SSH, registrado na Central e com banco validado.
 
+## Kit 0.1.3
+
+Este pacote inclui TronSoftOS 0.1.134. O vinculo Git e restaurado e validado
+automaticamente ao concluir a instalacao, permitindo futuras atualizacoes
+pela branch main no painel. Nao e necessario clonar o repositorio por cima
+da aplicacao instalada nem copiar novamente os arquivos de configuracao.
+
+O kit 0.1.2 nao recebe essa correcao retroativamente: baixe o novo artefato.
+
 ## Cloudflare
 
 O token do Provocateur nao pertence a este repositorio nem ao bundle. Ele foi salvo separadamente no computador de manutencao:

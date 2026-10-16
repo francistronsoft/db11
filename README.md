@@ -10,6 +10,7 @@ O repositorio guarda scripts, versoes fixadas e documentacao. Pacotes `.deb`, No
 - Node.js `22.23.3` e instalado em `/opt` com checksum fixado.
 - Docker CE, CLI, containerd, Buildx e Compose usam versoes Bullseye fixadas no manifesto.
 - O TronSoftOS e empacotado em um commit exato e com o frontend previamente compilado.
+- Kit `0.1.3`: inclui TronSoftOS `0.1.134` e metadados Git rasos, separados do codigo, para habilitar atualizacoes pelo painel sem baixar o historico durante a instalacao.
 - Tokens, bancos, configuracoes privadas e chaves SSH nunca entram no repositorio ou no bundle.
 
 As versoes ficam em [`config/versions.env`](config/versions.env).
@@ -25,8 +26,8 @@ Execute em uma maquina Linux amd64 com Docker, Git e acesso a internet:
 Saidas:
 
 ```text
-dist/db11-kit-0.1.2-amd64.tar.gz
-dist/db11-kit-0.1.2-amd64.tar.gz.sha256
+dist/db11-kit-0.1.3-amd64.tar.gz
+dist/db11-kit-0.1.3-amd64.tar.gz.sha256
 ```
 
 O workflow `build-installation-kit` executa o mesmo processo em Linux no GitHub Actions e publica o resultado como artefato `db11-kit-amd64`, com retencao de 14 dias.
@@ -42,9 +43,9 @@ TRONSOFTOS_REF_OVERRIDE=<commit-ou-tag> ./scripts/build-kit.sh
 No Debian 11 recem-instalado:
 
 ```bash
-sha256sum --check db11-kit-0.1.2-amd64.tar.gz.sha256
-tar -xzf db11-kit-0.1.2-amd64.tar.gz
-cd db11-kit-0.1.2-amd64
+sha256sum --check db11-kit-0.1.3-amd64.tar.gz.sha256
+tar -xzf db11-kit-0.1.3-amd64.tar.gz
+cd db11-kit-0.1.3-amd64
 sudo ./scripts/install-kit.sh --prepare-only
 ```
 
@@ -55,6 +56,23 @@ sudo ./scripts/install-kit.sh --install-tronsoftos
 ```
 
 Leia [`docs/provocateur.md`](docs/provocateur.md) antes de formatar qualquer no.
+
+## Atualizacoes pelo painel
+
+O kit 0.1.3 inclui `TRONSOFTOS_GIT.tar.gz`, coberto pelos checksums do bundle.
+Ao terminar a instalacao, restaura somente `/opt/tronsoftos/.git`, com a
+propriedade do usuario de servico `tronsoftos`, branch `main` e remoto `origin`.
+O commit e validado antes e depois da restauracao. Nao executa checkout/reset
+sobre arquivos instalados e nao sobrescreve `.env`, estado ou configuracoes.
+
+Se ja existir um repositorio, ele e validado e preservado. Se o commit, a
+branch ou o remoto forem diferentes dos incluidos no kit, a instalacao da
+aplicacao e recusada antes de copiar o codigo; use o atualizador do painel.
+A criacao do vinculo funciona offline; buscar futuras versoes exige internet.
+
+Pacotes 0.1.2 ja baixados continuam antigos. Para novas instalacoes use o
+artefato gerado pelo build 0.1.3. A correcao nao modifica servidores existentes
+automaticamente nem exige reinstalacao do Debian.
 
 ## Validar o repositorio
 

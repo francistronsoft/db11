@@ -81,9 +81,10 @@ docker run --rm \
   '
 
 echo "[3/6] Obtendo TronSoftOS em ${TRONSOFTOS_REF}..."
-git clone --filter=blob:none --no-checkout "$TRONSOFTOS_REPOSITORY" "$STAGE_DIR/app/tronsoftos"
+git init "$STAGE_DIR/app/tronsoftos"
+git -C "$STAGE_DIR/app/tronsoftos" remote add origin "$TRONSOFTOS_REPOSITORY"
 git -C "$STAGE_DIR/app/tronsoftos" fetch --depth 1 origin "$TRONSOFTOS_REF"
-git -C "$STAGE_DIR/app/tronsoftos" checkout --detach FETCH_HEAD
+git -C "$STAGE_DIR/app/tronsoftos" checkout -B main FETCH_HEAD
 
 echo "[4/6] Compilando frontend com Node.js ${NODE_VERSION}..."
 docker run --rm \
@@ -101,15 +102,23 @@ docker run --rm \
   '
 
 git -C "$STAGE_DIR/app/tronsoftos" rev-parse HEAD > "$STAGE_DIR/TRONSOFTOS_COMMIT"
+git -C "$STAGE_DIR/app/tronsoftos" config branch.main.remote origin
+git -C "$STAGE_DIR/app/tronsoftos" config branch.main.merge refs/heads/main
+git -C "$STAGE_DIR/app/tronsoftos" config core.filemode false
+git -C "$STAGE_DIR/app/tronsoftos" update-ref refs/remotes/origin/main HEAD
+tar -C "$STAGE_DIR/app/tronsoftos" -czf "$STAGE_DIR/TRONSOFTOS_GIT.tar.gz" .git
 rm -rf "$STAGE_DIR/app/tronsoftos/.git"
 
 echo "[5/6] Copiando instalador e configuracoes..."
 mkdir -p "$STAGE_DIR/config" "$STAGE_DIR/scripts"
 cp "$ROOT_DIR/config/versions.env" "$STAGE_DIR/config/versions.env"
+printf '\nTRONSOFTOS_REPOSITORY=%q\nTRONSOFTOS_REF=%q\n' \
+  "$TRONSOFTOS_REPOSITORY" "$(cat "$STAGE_DIR/TRONSOFTOS_COMMIT")" >> "$STAGE_DIR/config/versions.env"
 cp "$ROOT_DIR/config/bullseye.sources.list" "$STAGE_DIR/config/bullseye.sources.list"
 cp "$ROOT_DIR/config/99bullseye-archive" "$STAGE_DIR/config/99bullseye-archive"
 cp "$ROOT_DIR/scripts/install-kit.sh" "$STAGE_DIR/scripts/install-kit.sh"
 cp "$ROOT_DIR/scripts/verify-kit.sh" "$STAGE_DIR/scripts/verify-kit.sh"
+cp "$ROOT_DIR/scripts/initialize-app-git.sh" "$STAGE_DIR/scripts/initialize-app-git.sh"
 cp "$ROOT_DIR/docs/provocateur.md" "$STAGE_DIR/README-PROVOCATEUR.md"
 chmod +x "$STAGE_DIR/scripts/"*.sh
 

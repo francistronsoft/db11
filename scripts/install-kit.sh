@@ -89,8 +89,16 @@ if [ "$INSTALL_TRONSOFTOS" != "true" ]; then
 fi
 
 commit="$(cat "$ROOT_DIR/TRONSOFTOS_COMMIT")"
+if [ -e /opt/tronsoftos/.git ] || [ -L /opt/tronsoftos/.git ]; then
+  bash "$ROOT_DIR/scripts/initialize-app-git.sh" "$ROOT_DIR/TRONSOFTOS_GIT.tar.gz" \
+    /opt/tronsoftos "$commit" "$TRONSOFTOS_REPOSITORY"
+fi
 TRONSOFTOS_APP_DIR=/opt/tronsoftos \
 TRONSOFTOS_SKIP_FRONTEND_BUILD=true \
 TRONSOFTOS_GIT_COMMIT="$commit" \
-TRONSOFTOS_GIT_BRANCH="db11-kit" \
+TRONSOFTOS_GIT_BRANCH="main" \
   bash "$ROOT_DIR/app/tronsoftos/install.sh"
+
+bash "$ROOT_DIR/scripts/initialize-app-git.sh" "$ROOT_DIR/TRONSOFTOS_GIT.tar.gz" \
+  /opt/tronsoftos "$commit" "$TRONSOFTOS_REPOSITORY"
+echo "Kit $KIT_VERSION concluido; TronSoftOS com atualizacao Git habilitada."
