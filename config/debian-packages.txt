@@ -25,3 +25,6 @@ bash
 findutils
 perl
 systemd-timesyncd
+udev
+initramfs-tools
+linux-image-amd64

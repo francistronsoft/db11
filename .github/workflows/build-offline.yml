@@ -9,6 +9,8 @@ on:
       - scripts/build-iso.sh
       - scripts/prepare-offline.sh
       - scripts/build-kit.sh
+      - scripts/install-kit.sh
+      - config/**
       - iso/**
 
 permissions:

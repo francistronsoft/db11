@@ -76,7 +76,7 @@ if [ "$OFFLINE" = true ]; then
   . "$ROOT_DIR/app/tronsoftos/scripts/offline-support.sh"
   offline_apt_get update
   mapfile -t package_names < <(for package in "$ROOT_DIR"/packages/*.deb; do dpkg-deb -f "$package" Package; done | sort -u)
-  offline_apt_get --no-download install -y "${package_names[@]}"
+  offline_apt_get --no-download --no-remove install -y "${package_names[@]}"
 else
   apt-get update
   if compgen -G "$ROOT_DIR/packages/*.deb" >/dev/null; then
