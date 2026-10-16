@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+if [ "$(id -u)" -ne 0 ]; then
+  echo 'Entre como root com: su -' >&2
+  echo 'Depois execute: instalar' >&2
+  exit 1
+fi
+
+installer=/opt/db11-kit/scripts/install-kit.sh
+if [ ! -f "$installer" ]; then
+  echo "Kit offline nao encontrado em /opt/db11-kit." >&2
+  exit 1
+fi
+
+exec /bin/bash "$installer" --install-tronsoftos --offline "$@"

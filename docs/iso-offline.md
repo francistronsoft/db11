@@ -6,6 +6,7 @@ publicado anteriormente nao e modificado retroativamente.
 ## Conteudo
 
 - Debian 11.11 DVD-1 oficial, SHA256 verificado antes da remasterizacao.
+- Perfil servidor: console e SSH, sem GNOME, Xfce, KDE ou outra tarefa desktop.
 - Pacotes .deb e indice APT local, incluindo dependencias do Firebird.
 - Node 22, Docker/Compose e frontend ja compilado.
 - FirebirdCS 2.5.9 e template.fdb obtidos do Bitrix e cobertos pelos checksums.
@@ -38,10 +39,12 @@ discos automaticamente. Os menus BIOS e UEFI originais sao preservados.
 Depois do primeiro boot, entre como root e execute:
 
 ```bash
-bash /opt/db11-kit/scripts/install-kit.sh --install-tronsoftos --offline
+instalar
 ```
 
-O caminho e fixo, copiado da midia pelo instalador Debian. O assistente pede
+O comando instalar e copiado para /usr/local/sbin pelo instalador Debian e
+executa o kit em /opt/db11-kit, independentemente do diretorio atual.
+Nao inicia automaticamente e exige login como root. O assistente pede
 identidade/rede. Nessa etapa nao deve haver npm install, docker build/pull ou
 consulta a repositorio externo. APT usa somente o indice e os .deb locais;
 imagens Docker sao importadas antes de subir o stack.

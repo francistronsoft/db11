@@ -5,7 +5,7 @@ TRONSOFTOS / TRONFIRE - INSTALACAO OFFLINE
 2. Depois de reiniciar, entre como root (ou use su - root).
 3. Execute, sem precisar de internet:
 
-   bash /opt/db11-kit/scripts/install-kit.sh --install-tronsoftos --offline
+   instalar
 
 O assistente configura este servidor. Firebird 2.5.9, template, pacotes locais
 e imagens prontas do TronFire estao incluidos. Nenhum build de Docker/npm

@@ -29,6 +29,15 @@ test "$(cat "$ROOT_DIR/VERSION")" = "$KIT_VERSION"
 grep -q '72351d671d6e23be053aa08aaab4ae3e064fc418' "$ROOT_DIR/config/versions.env"
 bash -n "$ROOT_DIR/scripts/prepare-offline.sh"
 bash -n "$ROOT_DIR/scripts/build-iso.sh"
+bash -n "$ROOT_DIR/iso/instalar"
+grep -q 'chmod 755 /target/usr/local/sbin/instalar' "$ROOT_DIR/iso/preseed.cfg"
+grep -q 'exec /bin/bash "$installer" --install-tronsoftos --offline' "$ROOT_DIR/iso/instalar"
+grep -q '/tronsoftos/instalar' "$ROOT_DIR/scripts/build-iso.sh"
+grep -q '^tasksel tasksel/first multiselect ssh-server$' "$ROOT_DIR/iso/preseed.cfg"
+if grep -qE '^tasksel .*desktop|^d-i partman.*/confirm.* true' "$ROOT_DIR/iso/preseed.cfg"; then
+  echo "ISO nao deve instalar desktop nem confirmar particionamento automaticamente." >&2
+  exit 1
+fi
 grep -q 'TRONSOFTOS_GIT.tar.gz' "$ROOT_DIR/scripts/build-kit.sh"
 grep -q 'initialize-app-git.sh' "$ROOT_DIR/scripts/install-kit.sh"
 if grep -q 'f1d25a78' "$ROOT_DIR/.github/workflows/build-kit.yml"; then

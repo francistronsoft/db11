@@ -17,6 +17,7 @@ trap 'rm -rf -- "$temporary"' EXIT
 for file in isolinux/txt.cfg boot/grub/grub.cfg md5sum.txt; do
   mkdir -p "$temporary/$(dirname "$file")"
   xorriso -osirrox on -indev "$base_iso" -extract "/$file" "$temporary/$file"
+  chmod u+w "$temporary/$file"
 done
 cat "$ROOT_DIR/iso/isolinux-entry.cfg" >> "$temporary/isolinux/txt.cfg"
 cat "$ROOT_DIR/iso/grub-entry.cfg" >> "$temporary/boot/grub/grub.cfg"
@@ -28,13 +29,14 @@ done
   cd "$kit"
   find . -type f -print0 | sort -z | xargs -0 md5sum | sed 's#  ./#  ./tronsoftos/kit/#'
 ) >> "$temporary/md5sum.new"
-for file in preseed.cfg INSTALAR.txt; do
+for file in preseed.cfg INSTALAR.txt instalar; do
   printf '%s  ./tronsoftos/%s\n' "$(md5sum "$ROOT_DIR/iso/$file" | cut -d' ' -f1)" "$file" >> "$temporary/md5sum.new"
 done
 xorriso -indev "$base_iso" -outdev "$output" \
   -map "$kit" /tronsoftos/kit \
   -map "$ROOT_DIR/iso/preseed.cfg" /tronsoftos/preseed.cfg \
   -map "$ROOT_DIR/iso/INSTALAR.txt" /tronsoftos/INSTALAR.txt \
+  -map "$ROOT_DIR/iso/instalar" /tronsoftos/instalar \
   -map "$temporary/isolinux/txt.cfg" /isolinux/txt.cfg \
   -map "$temporary/boot/grub/grub.cfg" /boot/grub/grub.cfg \
   -map "$temporary/md5sum.new" /md5sum.txt \
