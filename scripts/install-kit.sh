@@ -7,12 +7,15 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 . "$ROOT_DIR/config/versions.env"
 
 INSTALL_TRONSOFTOS=false
-if [ "${1:-}" = "--install-tronsoftos" ]; then
-  INSTALL_TRONSOFTOS=true
-elif [ -n "${1:-}" ] && [ "${1:-}" != "--prepare-only" ]; then
-  echo "Uso: sudo $0 [--prepare-only|--install-tronsoftos]" >&2
-  exit 2
-fi
+OFFLINE=false
+for argument in "$@"; do
+  case "$argument" in
+    --install-tronsoftos) INSTALL_TRONSOFTOS=true ;;
+    --prepare-only) : ;;
+    --offline) OFFLINE=true ;;
+    *) echo "Uso: sudo $0 [--prepare-only|--install-tronsoftos] [--offline]" >&2; exit 2 ;;
+  esac
+done
 
 if [ "$(id -u)" -ne 0 ]; then
   echo "Execute como root: sudo $0" >&2
@@ -52,18 +55,34 @@ if [ ! -e "${ca_package[0]}" ] || [ ! -e "${openssl_package[0]}" ]; then
 fi
 
 export DEBIAN_FRONTEND=noninteractive
-dpkg -i "${openssl_package[@]}" "${ca_package[@]}"
-update-ca-certificates
+if [ "$OFFLINE" != true ]; then
+  dpkg -i "${openssl_package[@]}" "${ca_package[@]}"
+  update-ca-certificates
+fi
 
 install -m 0644 "$ROOT_DIR/config/bullseye.sources.list" /etc/apt/sources.list
 install -m 0644 "$ROOT_DIR/config/99bullseye-archive" /etc/apt/apt.conf.d/99bullseye-archive
 find /etc/apt/sources.list.d -maxdepth 1 -type f \( -name '*.list' -o -name '*.sources' \) -exec mv {} "$backup_dir/" \;
 
-apt-get update
-
-if compgen -G "$ROOT_DIR/packages/*.deb" >/dev/null; then
-  dpkg -i "$ROOT_DIR"/packages/*.deb || true
-  apt-get --fix-broken install -y
+if [ "$OFFLINE" = true ]; then
+  [ -f "$ROOT_DIR/packages/Packages.gz" ] && [ -f "$ROOT_DIR/images/tronfire-images.tar.gz" ] || {
+    echo "Este bundle nao contem o repositorio e as imagens offline." >&2; exit 2;
+  }
+  [[ "$ROOT_DIR" != *[[:space:]]* ]] || { echo "Extraia o kit offline em um caminho sem espacos." >&2; exit 2; }
+  mkdir -p /var/lib/tronsoftos-offline "$ROOT_DIR/packages/partial"
+  export TRONSOFTOS_OFFLINE_APT_LIST=/var/lib/tronsoftos-offline/sources.list
+  export TRONSOFTOS_OFFLINE_PACKAGES="$ROOT_DIR/packages"
+  printf 'deb [trusted=yes] file:%s ./\n' "$ROOT_DIR/packages" > "$TRONSOFTOS_OFFLINE_APT_LIST"
+  . "$ROOT_DIR/app/tronsoftos/scripts/offline-support.sh"
+  offline_apt_get update
+  mapfile -t package_names < <(for package in "$ROOT_DIR"/packages/*.deb; do dpkg-deb -f "$package" Package; done | sort -u)
+  offline_apt_get --no-download install -y "${package_names[@]}"
+else
+  apt-get update
+  if compgen -G "$ROOT_DIR/packages/*.deb" >/dev/null; then
+    dpkg -i "$ROOT_DIR"/packages/*.deb || true
+    apt-get --fix-broken install -y
+  fi
 fi
 
 node_archive="$ROOT_DIR/node/node-v${NODE_VERSION}-linux-x64.tar.xz"
@@ -76,6 +95,12 @@ ln -sfn "$node_target/bin/npm" /usr/local/bin/npm
 ln -sfn "$node_target/bin/npx" /usr/local/bin/npx
 
 systemctl enable --now docker
+if [ "$OFFLINE" = true ]; then
+  gzip -dc "$ROOT_DIR/images/tronfire-images.tar.gz" | docker load
+  export TRONSOFTOS_OFFLINE=true
+  export FIREBIRD_PACKAGE_SHA256="$(awk '$2 ~ /FirebirdCS-/ {print $1}' "$ROOT_DIR/FIREBIRD_ASSETS.sha256")"
+  export FIREBIRD_TEMPLATE_SHA256="$(awk '$2 ~ /template.fdb/ {print $1}' "$ROOT_DIR/FIREBIRD_ASSETS.sha256")"
+fi
 
 echo "Debian: $(cat /etc/debian_version)"
 echo "Node:   $(node --version)"

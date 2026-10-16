@@ -1,0 +1,53 @@
+name: build-offline-core
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/build-offline.yml
+      - scripts/build-iso.sh
+      - iso/**
+
+permissions:
+  contents: read
+
+jobs:
+  offline-core:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - name: Tools
+        run: sudo apt-get update && sudo apt-get install -y dpkg-dev xorriso
+      - name: Build offline kit
+        env:
+          BUILD_OFFLINE: 'true'
+        run: bash scripts/build-kit.sh
+      - name: Download verified Debian DVD
+        run: curl --fail --location --retry 5 --output debian-11.11.0-amd64-DVD-1.iso https://cdimage.debian.org/mirror/cdimage/archive/11.11.0/amd64/iso-dvd/debian-11.11.0-amd64-DVD-1.iso
+      - name: Assemble BIOS and UEFI ISO
+        run: |
+          source config/versions.env
+          bash scripts/build-iso.sh debian-11.11.0-amd64-DVD-1.iso "work/db11-kit-${KIT_VERSION}-amd64"
+      - name: Upload offline core
+        uses: actions/upload-artifact@v4
+        with:
+          name: db11-kit-offline-core
+          path: |
+            dist/db11-kit-*.tar.gz
+            dist/db11-kit-*.tar.gz.sha256
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+      - name: Upload ISO
+        uses: actions/upload-artifact@v4
+        with:
+          name: tronsoftos-db11-offline-iso
+          path: |
+            dist/tronsoftos-db11-*.iso
+            dist/tronsoftos-db11-*.iso.sha256
+            dist/tronsoftos-db11-*.iso.boot.txt
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error

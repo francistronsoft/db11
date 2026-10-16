@@ -24,8 +24,11 @@ fi
 grep -q 'Acquire::Check-Valid-Until "false"' "$ROOT_DIR/config/99bullseye-archive"
 grep -q 'sha256sum "$(basename "$ARCHIVE")"' "$ROOT_DIR/scripts/build-kit.sh"
 grep -q 'Nao execute pelo clone do Git' "$ROOT_DIR/scripts/install-kit.sh"
-grep -q 'KIT_VERSION=0.1.3' "$ROOT_DIR/config/versions.env"
-grep -q '448fa48d129605d5f0fc72f1db00c8c58c28c05c' "$ROOT_DIR/config/versions.env"
+. "$ROOT_DIR/config/versions.env"
+test "$(cat "$ROOT_DIR/VERSION")" = "$KIT_VERSION"
+grep -q '72351d671d6e23be053aa08aaab4ae3e064fc418' "$ROOT_DIR/config/versions.env"
+bash -n "$ROOT_DIR/scripts/prepare-offline.sh"
+bash -n "$ROOT_DIR/scripts/build-iso.sh"
 grep -q 'TRONSOFTOS_GIT.tar.gz' "$ROOT_DIR/scripts/build-kit.sh"
 grep -q 'initialize-app-git.sh' "$ROOT_DIR/scripts/install-kit.sh"
 if grep -q 'f1d25a78' "$ROOT_DIR/.github/workflows/build-kit.yml"; then

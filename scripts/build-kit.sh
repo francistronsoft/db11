@@ -123,6 +123,9 @@ cp "$ROOT_DIR/docs/provocateur.md" "$STAGE_DIR/README-PROVOCATEUR.md"
 chmod +x "$STAGE_DIR/scripts/"*.sh
 
 echo "[6/6] Gerando checksums e arquivo final..."
+if [ "${BUILD_OFFLINE:-false}" = true ]; then
+  bash "$ROOT_DIR/scripts/prepare-offline.sh" "$STAGE_DIR"
+fi
 (
   cd "$STAGE_DIR"
   find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS

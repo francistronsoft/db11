@@ -1,0 +1,15 @@
+TRONSOFTOS / TRONFIRE - INSTALACAO OFFLINE
+
+1. Instale o Debian pela opcao "TronSoftOS - Debian 11 offline".
+   Escolha o disco e as senhas normalmente. Nao e necessario usar espelho de rede.
+2. Depois de reiniciar, entre como root (ou use su - root).
+3. Execute, sem precisar de internet:
+
+   bash /opt/db11-kit/scripts/install-kit.sh --install-tronsoftos --offline
+
+O assistente configura este servidor. Firebird 2.5.9, template, pacotes locais
+e imagens prontas do TronFire estao incluidos. Nenhum build de Docker/npm
+deve ocorrer nesta etapa. Cloudflare, Central, GDrive e instalacao de outros
+aplicativos pelo painel exigem conectividade posteriormente.
+
+Nao formate servidores com dados sem backup validado.

@@ -15,3 +15,13 @@ samba
 samba-common-bin
 sudo
 xz-utils
+libstdc++6
+libtommath1
+libncurses5
+libtinfo5
+procps
+net-tools
+bash
+findutils
+perl
+systemd-timesyncd
