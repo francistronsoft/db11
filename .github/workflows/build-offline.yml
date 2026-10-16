@@ -8,6 +8,7 @@ on:
       - .github/workflows/build-offline.yml
       - scripts/build-iso.sh
       - scripts/prepare-offline.sh
+      - scripts/build-kit.sh
       - iso/**
 
 permissions:
@@ -49,6 +50,14 @@ jobs:
             dist/tronsoftos-db11-*.iso
             dist/tronsoftos-db11-*.iso.sha256
             dist/tronsoftos-db11-*.iso.boot.txt
+          compression-level: 0
+          retention-days: 3
+          if-no-files-found: error
+      - name: Upload offline packages for validation
+        uses: actions/upload-artifact@v4
+        with:
+          name: db11-offline-packages
+          path: work/db11-kit-*/packages/
           compression-level: 0
           retention-days: 3
           if-no-files-found: error

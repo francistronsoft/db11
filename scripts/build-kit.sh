@@ -78,6 +78,10 @@ docker run --rm \
       "docker-buildx-plugin=${DOCKER_BUILDX_VERSION}" \
       "docker-compose-plugin=${DOCKER_COMPOSE_VERSION}"
     cp /var/cache/apt/archives/*.deb /out/
+    # Inclui tambem a base ja instalada na imagem slim: o DVD pode trazer
+    # versoes anteriores das bibliotecas com dependencias de versao exata.
+    mapfile -t base_packages < <(dpkg-query -W -f="\${binary:Package}\n")
+    (cd /out && apt-get download "${base_packages[@]}")
   '
 
 echo "[3/6] Obtendo TronSoftOS em ${TRONSOFTOS_REF}..."
