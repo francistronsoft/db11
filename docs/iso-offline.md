@@ -1,7 +1,9 @@
 # ISO offline Debian 11 / TronSoftOS
 
-Nova linha de empacotamento 0.1.4, com TronSoftOS 0.1.135. O pacote 0.1.3
-publicado anteriormente nao e modificado retroativamente.
+Empacotamento 0.1.5, com TronSoftOS 0.1.136. Inclui validacao de extensao antes
+da reserva de restauracao e liberacao segura da reserva em falha do upload.
+Arquivos .001 continuam nao suportados: use backup completo GBK/FBK (ou gzip).
+Os pacotes e ISOs anteriores nao sao modificados retroativamente.
 
 ## Conteudo
 
@@ -22,7 +24,7 @@ Em Linux amd64 com Docker e internet durante a geracao:
 
 ```bash
 BUILD_OFFLINE=true bash scripts/build-kit.sh
-bash scripts/build-iso.sh /caminho/debian-11.11.0-amd64-DVD-1.iso work/db11-kit-0.1.4-amd64
+bash scripts/build-iso.sh /caminho/debian-11.11.0-amd64-DVD-1.iso work/db11-kit-0.1.5-amd64
 ```
 
 O gerador requer dpkg-scanpackages (dpkg-dev), xorriso e espaco suficiente para
