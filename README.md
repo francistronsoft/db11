@@ -7,10 +7,10 @@ O repositorio guarda scripts, versoes fixadas e documentacao. Pacotes `.deb`, No
 ## Decisoes de compatibilidade
 
 - Debian Bullseye usa snapshots imutaveis do repositorio principal e do ultimo `bullseye-security`.
-- Node.js `22.23.3` e instalado em `/opt` com checksum fixado.
+- Node.js `22.23.4` e instalado em `/opt` com checksum fixado.
 - Docker CE, CLI, containerd, Buildx e Compose usam versoes Bullseye fixadas no manifesto.
 - O TronSoftOS e empacotado em um commit exato e com o frontend previamente compilado.
-- Kit `0.1.5`: inclui TronSoftOS `0.1.136`, protecao contra reserva presa em upload invalido, metadados Git e geracao opcional de pacote/ISO offline.
+- Kit `0.1.6`: inclui TronSoftOS `0.1.137` e Node corrigido no host, backend e worker, preservando a protecao contra reserva presa em upload invalido, metadados Git e geracao opcional de pacote/ISO offline.
 - Tokens, bancos, configuracoes privadas e chaves SSH nunca entram no repositorio ou no bundle.
 
 As versoes ficam em [`config/versions.env`](config/versions.env).
@@ -26,8 +26,8 @@ Execute em uma maquina Linux amd64 com Docker, Git e acesso a internet:
 Saidas:
 
 ```text
-dist/db11-kit-0.1.5-amd64.tar.gz
-dist/db11-kit-0.1.5-amd64.tar.gz.sha256
+dist/db11-kit-0.1.6-amd64.tar.gz
+dist/db11-kit-0.1.6-amd64.tar.gz.sha256
 ```
 
 O workflow `build-installation-kit` executa o mesmo processo em Linux no GitHub Actions e publica o resultado como artefato `db11-kit-amd64`, com retencao de 14 dias.

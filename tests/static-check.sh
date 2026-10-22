@@ -26,7 +26,10 @@ grep -q 'sha256sum "$(basename "$ARCHIVE")"' "$ROOT_DIR/scripts/build-kit.sh"
 grep -q 'Nao execute pelo clone do Git' "$ROOT_DIR/scripts/install-kit.sh"
 . "$ROOT_DIR/config/versions.env"
 test "$(cat "$ROOT_DIR/VERSION")" = "$KIT_VERSION"
-grep -q 'f52adb93ddb8f2a20a62685239c97a8a4f93d179' "$ROOT_DIR/config/versions.env"
+grep -q '67b7213893918110e8029f0513f5f0fba83be1ca' "$ROOT_DIR/config/versions.env"
+test "$NODE_VERSION" = 22.23.4
+test "$NODE_SHA256" = 1805bcd35e6815559bd2eb97db438d3fdb0eb3a5e6a977b7c1badca76337e9ce
+grep -q 'node:${NODE_VERSION}-bookworm-slim' "$ROOT_DIR/scripts/build-kit.sh"
 bash -n "$ROOT_DIR/scripts/prepare-offline.sh"
 bash -n "$ROOT_DIR/scripts/build-iso.sh"
 grep -q -- '--no-download --no-remove install' "$ROOT_DIR/scripts/install-kit.sh"

@@ -95,7 +95,7 @@ docker run --rm \
   --user "$(id -u):$(id -g)" \
   --volume "$STAGE_DIR/app/tronsoftos/frontend:/src" \
   --workdir /src \
-  node:22-bullseye \
+  "node:${NODE_VERSION}-bookworm-slim" \
   bash -euc '
     export HOME=/tmp/tronsoftos-build
     export npm_config_cache="$HOME/.npm"
